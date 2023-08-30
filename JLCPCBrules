@@ -1,0 +1,36 @@
+# Rules for JLCPCB multilayer boards
+
+
+(version 1)
+(rule "Inner Trace to Outline Routed"
+(layer inner) (constraint edge_clearance (min 0.3mm)))
+
+(rule "Outer Trace to Outline Routed"
+(layer outer)(constraint edge_clearance (min 0.3mm)))
+
+(rule "Distance between Vias of Same Nets"
+    (constraint hole_to_hole (min 0.254mm))
+    (condition "A.Type == 'Via' && B.Type == 'Via' && A.Net == B.Net"))
+
+(rule "Distance between Vias of Different Nets"
+    (constraint hole_to_hole (min 0.5mm))
+    (condition "A.Type == 'Via' && B.Type == 'Via' && A.Net != B.Net"))
+
+(rule "Distance between PADS of Different Nets"
+    (constraint hole_to_hole (min 0.127mm))
+    (condition "A.Type == 'Pad' && B.Type == 'Pad' && A.Net != B.Net"))
+
+(rule "Distance between Track to Via of Different Nets"
+    (constraint hole_to_hole (min 0.254mm))
+    (condition "A.Type == 'Track' && B.Type == 'Via' && A.Net != B.Net"))
+
+(rule "Distance between Track to Pad of Different Nets"
+    (constraint hole_to_hole (min 0.2mm))
+    (condition "A.Type == 'Track' && B.Type == 'Pad' && A.Net != B.Net"))
+
+# Enforce a mechanical clearance between components and board edge
+(rule front_mechanical_board_edge_clearance
+    (layer "F.Courtyard")
+    (constraint physical_clearance (min 1mm))
+    (condition "B.Layer == 'Edge.Cuts'"))
+
